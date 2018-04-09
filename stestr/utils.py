@@ -66,7 +66,10 @@ def _iter_internal_streams(input_streams, stream_type):
             if getattr(stream_value.source, 'detach', None):
                 yield stream_value.source.detach()
             else:
-                yield stream_value.source
+                if hasattr(stream_value.source, 'buffer'):
+                    yield stream_value.source.buffer
+                else:
+                    yield stream_value.source
         elif getattr(stream_value, 'read', None):
             yield stream_value
         else:

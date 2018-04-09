@@ -198,25 +198,43 @@ class ReturnCodeToSubunit(object):
     def read(self, count=-1):
         if count == 0:
             return six.text_type('')
-        result = self.source.read(count)
+        if hasattr(self.source, 'buffer'):
+            result = self.source.buffer.read(count)
+        else:
+            result = self.source.read(count)
         if result:
             self.lastoutput = result[-1]
             return result
         self._append_return_code_as_test()
-        return self.source.read(count)
+        if hasattr(self.source, 'buffer'):
+            return self.source.buffer.read(count)
+        else:
+            return self.source.read(count)
 
     def readline(self):
-        result = self.source.readline()
+        if hasattr(self.source, 'buffer'):
+            result = self.source.buffer.readline()
+        else:
+            result = self.source.readline()
         if result:
             self.lastoutput = result[-1]
             return result
         self._append_return_code_as_test()
-        return self.source.readline()
+        if hasattr(self.source, 'buffer'):
+            return self.source.buffer.readline()
+        else:
+            return self.source.readline()
 
     def readlines(self):
-        result = self.source.readlines()
+        if hasattr(self.source, 'buffer'):
+            result = self.source.buffer.readlines()
+        else:
+            result = self.source.readlines()
         if result:
             self.lastoutput = result[-1][-1]
         self._append_return_code_as_test()
-        result.extend(self.source.readlines())
+        if hasattr(self.source, 'buffer'):
+            result.extend(self.source.buffer.readlines())
+        else:
+            result.extend(self.source.readlines())
         return result
